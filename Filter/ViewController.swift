@@ -22,6 +22,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
     var totalGreen = 0
     var firstLoad = true
 
+    @IBOutlet weak var showLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var buttomMenu: UIView!
     @IBOutlet var secondaryMenu: UIView!
@@ -128,6 +129,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
             avrGreen = totalGreen/pixCount
             avrBlue = totalBlue/pixCount
             compare.enabled = false
+            showLabel.hidden = false
         }
     }
     
@@ -198,6 +200,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         filteredImage = myRGBA.toUIImage()
         imageView.image = filteredImage
         compare.enabled = true
+        showLabel.hidden = true
     }
     @IBAction func onRedFilter(sender: AnyObject) {
         
@@ -219,6 +222,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         filteredImage = myRGBA.toUIImage()
         imageView.image = filteredImage
         compare.enabled = true
+        showLabel.hidden = true
     }
     @IBAction func onBlueFilter(sender: AnyObject) {
         // Process the image!
@@ -239,6 +243,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         filteredImage = myRGBA.toUIImage()
         imageView.image = filteredImage
         compare.enabled = true
+        showLabel.hidden = true
     }
     @IBAction func onGreenFilter(sender: AnyObject) {
         // Process the image!
@@ -259,14 +264,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         filteredImage = myRGBA.toUIImage()
         imageView.image = filteredImage
         compare.enabled = true
+        showLabel.hidden = true
     }
     @IBAction func onCompared(sender: AnyObject) {
         if compare.selected {
             imageView.image = filteredImage
             compare.selected = false
+            showLabel.hidden = true
         } else {
             imageView.image = oriImage
             compare.selected = true
+            showLabel.hidden = false
         }
         
     }
@@ -275,6 +283,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         imageView.image = filteredImage
         compare.selected = false
         compare.enabled = false
+        showLabel.hidden = false
     }
 }
 
