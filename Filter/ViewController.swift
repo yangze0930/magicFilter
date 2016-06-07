@@ -21,6 +21,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
     var totalBlue = 0
     var totalGreen = 0
     var firstLoad = true
+    enum filterType{
+        case red, green, blue
+    }
+    var currentFilterType: filterType? = nil
 
     @IBOutlet weak var showLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
@@ -34,6 +38,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
     @IBOutlet weak var compare: UIButton!
     @IBOutlet weak var showOrigin: UIButton!
     @IBOutlet weak var tapButton: UIButton!
+    @IBOutlet var slider: UISlider!
+    @IBOutlet weak var Editor: UIButton!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,10 +66,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
             avrGreen = totalGreen/pixCount
             avrBlue = totalBlue/pixCount
             firstLoad = false
+            
         }
         compare.enabled = false
         secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         secondaryMenu.translatesAutoresizingMaskIntoConstraints = false
+        slider.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        Editor.enabled = false
         
     }
 
@@ -130,6 +141,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
             avrBlue = totalBlue/pixCount
             compare.enabled = false
             showLabel.hidden = false
+            Editor.selected = false
+            Editor.enabled = false
         }
     }
     
@@ -148,6 +161,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
     }
     
     func showSecondaryMenu() {
+        self.slider.alpha = 0
+        self.Editor.selected = false
         view.addSubview(secondaryMenu)
         
         let bottomConstraint = secondaryMenu.bottomAnchor.constraintEqualToAnchor(buttomMenu.topAnchor)
@@ -177,6 +192,48 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         
     }
     
+    @IBAction func onEditor(sender: UIButton) {
+        if(sender.selected) {
+            hideSlider()
+            sender.selected = false
+        } else {
+            showSlider()
+            sender.selected = true
+        }
+    }
+    
+    func showSlider() {
+        self.secondaryMenu.alpha = 0
+        self.filter.selected = false
+        view.addSubview(slider)
+        
+        let bottomConstraint = slider.bottomAnchor.constraintEqualToAnchor(buttomMenu.topAnchor)
+        let leftConstraint = slider.leftAnchor.constraintEqualToAnchor(view.leftAnchor)
+        let rightConstraint = slider.rightAnchor.constraintEqualToAnchor(view.rightAnchor)
+        let heightConstraint = slider.heightAnchor.constraintEqualToConstant(44)
+        
+        NSLayoutConstraint.activateConstraints([bottomConstraint,leftConstraint,rightConstraint,heightConstraint])
+        
+        view.layoutIfNeeded()
+        
+        self.slider.alpha = 0
+        UIView.animateWithDuration(0.4) {
+            self.slider.alpha = 1.0
+        }
+        
+    }
+    
+    func hideSlider() {
+        UIView.animateWithDuration(0.4, animations: {
+            self.slider.alpha = 0
+        }) { completed in
+            if completed == true {
+                self.slider.removeFromSuperview()
+            }
+        }
+    }
+    
+    
     @IBAction func onGreyFilter(sender: AnyObject) {
 
         // Process the image!
@@ -201,11 +258,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         imageView.image = filteredImage
         compare.enabled = true
         showLabel.hidden = true
+        Editor.enabled = false
     }
     @IBAction func onRedFilter(sender: AnyObject) {
         
         // Process the image!
-        
         var myRGBA = RGBAImage(image: oriImage!)!
         
         for y in 0..<myRGBA.height {
@@ -214,7 +271,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
                 var pixel = myRGBA.pixels[index]
                 let redDiff = Int(pixel.red) - avrRed
                 if redDiff > 0 {
-                    pixel.red = UInt8(max(0, min(255, avrRed + redDiff * 3)))
+                    let updateVal = avrRed + Int(Float(redDiff) * slider.value)
+                    pixel.red = UInt8(max(0, min(255, updateVal)))
                     myRGBA.pixels[index] = pixel
                 }
             }
@@ -223,6 +281,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         imageView.image = filteredImage
         compare.enabled = true
         showLabel.hidden = true
+        currentFilterType = filterType.red
+        Editor.enabled = true
     }
     @IBAction func onBlueFilter(sender: AnyObject) {
         // Process the image!
@@ -235,7 +295,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
                 var pixel = myRGBA.pixels[index]
                 let blueDiff = Int(pixel.blue) - avrBlue
                 if blueDiff > 0 {
-                    pixel.blue = UInt8(max(0, min(255, avrBlue + blueDiff * 3)))
+                    let updateVal = avrBlue + Int(Float(blueDiff) * slider.value)
+                    pixel.blue = UInt8(max(0, min(255, updateVal)))
                     myRGBA.pixels[index] = pixel
                 }
             }
@@ -244,6 +305,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         imageView.image = filteredImage
         compare.enabled = true
         showLabel.hidden = true
+        currentFilterType = filterType.blue
+        Editor.enabled = true
     }
     @IBAction func onGreenFilter(sender: AnyObject) {
         // Process the image!
@@ -256,7 +319,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
                 var pixel = myRGBA.pixels[index]
                 let greenDiff = Int(pixel.green) - avrGreen
                 if greenDiff > 0 {
-                    pixel.green = UInt8(max(0, min(255, avrGreen + greenDiff * 3)))
+                    let updateVal = avrGreen + Int(Float(greenDiff) * slider.value)
+                    pixel.green = UInt8(max(0, min(255, updateVal)))
                     myRGBA.pixels[index] = pixel
                 }
             }
@@ -265,6 +329,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         imageView.image = filteredImage
         compare.enabled = true
         showLabel.hidden = true
+        currentFilterType = filterType.green
+        Editor.enabled = true
     }
     @IBAction func onCompared(sender: AnyObject) {
         if compare.selected {
@@ -284,6 +350,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         compare.selected = false
         compare.enabled = false
         showLabel.hidden = false
+        Editor.enabled = false
     }
     @IBAction func tapIn(sender: AnyObject) {
         if imageView.image == filteredImage {
@@ -314,8 +381,57 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
             compare.enabled = false
         } else {
             imageView.image = filteredImage
+            showLabel.hidden = true
+            compare.enabled = true
         }
         
+    }
+    @IBAction func onSlider(sender: AnyObject) {
+        var myRGBA = RGBAImage(image: oriImage!)!
+        if currentFilterType == .red {
+            for y in 0..<myRGBA.height {
+                for x in 0..<myRGBA.width {
+                    let index = y * myRGBA.width + x
+                    var pixel = myRGBA.pixels[index]
+                    let redDiff = Int(pixel.red) - avrRed
+                    if redDiff > 0 {
+                        let updateVal = avrRed + Int(Float(redDiff) * slider.value)
+                        pixel.red = UInt8(max(0, min(255, updateVal)))
+                        myRGBA.pixels[index] = pixel
+                    }
+                }
+            }
+        } else if currentFilterType == .green {
+            for y in 0..<myRGBA.height {
+                for x in 0..<myRGBA.width {
+                    let index = y * myRGBA.width + x
+                    var pixel = myRGBA.pixels[index]
+                    let greenDiff = Int(pixel.green) - avrGreen
+                    if greenDiff > 0 {
+                        let updateVal = avrGreen + Int(Float(greenDiff) * slider.value)
+                        pixel.green = UInt8(max(0, min(255, updateVal)))
+                        myRGBA.pixels[index] = pixel
+                    }
+                }
+            }
+        } else if currentFilterType == .blue {
+            for y in 0..<myRGBA.height {
+                for x in 0..<myRGBA.width {
+                    let index = y * myRGBA.width + x
+                    var pixel = myRGBA.pixels[index]
+                    let blueDiff = Int(pixel.blue) - avrBlue
+                    if blueDiff > 0 {
+                        let updateVal = avrBlue + Int(Float(blueDiff) * slider.value)
+                        pixel.blue = UInt8(max(0, min(255, updateVal)))
+                        myRGBA.pixels[index] = pixel
+                    }
+                }
+            }
+        }
+        filteredImage = myRGBA.toUIImage()
+        imageView.image = filteredImage
+        compare.enabled = true
+        showLabel.hidden = true
     }
     
 }
