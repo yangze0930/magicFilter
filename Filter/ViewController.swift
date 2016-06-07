@@ -33,7 +33,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
     @IBOutlet weak var redFilter: UIButton!
     @IBOutlet weak var compare: UIButton!
     @IBOutlet weak var showOrigin: UIButton!
-    
+    @IBOutlet weak var tapButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -285,5 +285,38 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         compare.enabled = false
         showLabel.hidden = false
     }
+    @IBAction func tapIn(sender: AnyObject) {
+        if imageView.image == filteredImage {
+            imageView.image = oriImage
+            showLabel.hidden = false
+            compare.enabled = false
+        } else {
+            imageView.image = filteredImage
+            showLabel.hidden = true
+            compare.enabled = true
+        }
+    }
+    @IBAction func tapOut(sender: AnyObject) {
+        if imageView.image == filteredImage {
+            imageView.image = oriImage
+            showLabel.hidden = false
+            compare.enabled = false
+        } else {
+            imageView.image = filteredImage
+            showLabel.hidden = true
+            compare.enabled = true
+        }
+    }
+    @IBAction func tapDown(sender: AnyObject) {
+        if imageView.image == filteredImage {
+            imageView.image = oriImage
+            showLabel.hidden = false
+            compare.enabled = false
+        } else {
+            imageView.image = filteredImage
+        }
+        
+    }
+    
 }
 
