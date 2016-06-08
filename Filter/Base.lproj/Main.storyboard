@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ2-bO-C5C">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ2-bO-C5C">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="gxQ-1i-qWL">
@@ -91,7 +91,7 @@
                                     <constraint firstItem="gxQ-1i-qWL" firstAttribute="top" secondItem="ZQ2-bO-C5C" secondAttribute="top" id="quG-1T-VxP"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wTt-PO-aQD">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wTt-PO-aQD">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <connections>
                                     <action selector="tapDown:" destination="BYZ-38-t0r" eventType="touchDown" id="cVc-Lt-OfT"/>
@@ -99,7 +99,7 @@
                                     <action selector="tapOut:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="j0C-p0-nts"/>
                                 </connections>
                             </button>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" minimumZoomScale="0.10000000000000001" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="uII-Oo-wxJ">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.10000000000000001" maximumZoomScale="5" translatesAutoresizingMaskIntoConstraints="NO" id="uII-Oo-wxJ">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="landscape" translatesAutoresizingMaskIntoConstraints="NO" id="Bph-g4-WPy">
@@ -177,6 +177,10 @@
                         <outlet property="filter" destination="3O2-pE-bIn" id="qvz-ti-RIU"/>
                         <outlet property="greenFilter" destination="M5l-5T-oUm" id="Iaw-xk-F0d"/>
                         <outlet property="greyFilter" destination="A2j-im-eQV" id="i7v-Rq-xjY"/>
+                        <outlet property="imageConstraintBottom" destination="Itq-I2-bhz" id="7YO-Zi-B2m"/>
+                        <outlet property="imageConstraintLeft" destination="YVC-vm-sW9" id="7AE-Qj-XBa"/>
+                        <outlet property="imageConstraintRight" destination="mwX-Al-N0D" id="jPM-83-4n7"/>
+                        <outlet property="imageConstraintTop" destination="ABG-cd-chb" id="Uq1-hJ-ULm"/>
                         <outlet property="imageView" destination="Bph-g4-WPy" id="toV-7b-gn9"/>
                         <outlet property="redFilter" destination="HIb-mN-1pq" id="lYC-NH-qhQ"/>
                         <outlet property="scrollView" destination="uII-Oo-wxJ" id="2Z5-Mx-bib"/>
@@ -255,7 +259,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-221" y="89"/>
+            <point key="canvasLocation" x="-277" y="89"/>
         </scene>
         <!--Social-->
         <scene sceneID="jFx-rN-GwJ">
@@ -294,7 +298,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="60Z-pE-S2m" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2105" y="89"/>
+            <point key="canvasLocation" x="2069" y="89"/>
         </scene>
         <!--Detail-->
         <scene sceneID="7UD-Ps-NVw">
@@ -332,7 +336,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R7Q-Ir-K1H" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1293" y="89"/>
+            <point key="canvasLocation" x="1259" y="89"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="qDM-6Y-X9K">

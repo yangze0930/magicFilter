@@ -25,6 +25,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         case red, green, blue
     }
     var currentFilterType: filterType? = nil
+    var minZoom: CGFloat = 0
 
     @IBOutlet weak var showLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
@@ -43,6 +44,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet var zoomTapGestureRecognizer: UITapGestureRecognizer!
     @IBOutlet weak var scrollView: UIScrollView!
     
+    @IBOutlet weak var imageConstraintTop: NSLayoutConstraint!
+    @IBOutlet weak var imageConstraintRight: NSLayoutConstraint!
+    @IBOutlet weak var imageConstraintLeft: NSLayoutConstraint!
+    @IBOutlet weak var imageConstraintBottom: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -53,6 +59,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             totalGreen = 0
             totalBlue = 0
             var myRGBA = RGBAImage(image: oriImage!)!
+            //var width = myRGBA.width
             for y in 0..<myRGBA.height {
                 for x in 0..<myRGBA.width {
                     let index = y * myRGBA.width + x
@@ -67,7 +74,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             avrGreen = totalGreen/pixCount
             avrBlue = totalBlue/pixCount
             firstLoad = false
-            
         }
         compare.enabled = false
         secondaryMenu.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
@@ -78,11 +84,67 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         zoomTapGestureRecognizer.numberOfTapsRequired = 2
         
+        updateZoom()
+        updateConstraints()
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func willAnimateRotationToInterfaceOrientation(
+        toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        
+        super.willAnimateRotationToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+        updateZoom()
+    }
+    
+    func updateConstraints() {
+        if let image = imageView.image {
+            let imageWidth = image.size.width
+            let imageHeight = image.size.height
+            
+            let viewWidth = view.bounds.size.width
+            let viewHeight = view.bounds.size.height
+            
+            // center image if it is smaller than screen
+            var hPadding = (viewWidth - scrollView.zoomScale * imageWidth) / 2
+            if hPadding < 0 { hPadding = 0 }
+            
+            var vPadding = (viewHeight - scrollView.zoomScale * imageHeight) / 2
+            if vPadding < 0 { vPadding = 0 }
+            
+            imageConstraintLeft.constant = hPadding
+            imageConstraintRight.constant = hPadding
+            
+            imageConstraintTop.constant = vPadding
+            imageConstraintBottom.constant = vPadding
+            
+            // Makes zoom out animation smooth and starting from the right point not from (0, 0)
+            view.layoutIfNeeded()
+        }
+    }
+    
+    private func updateZoom() {
+        if let image = imageView.image {
+            minZoom = min(view.bounds.size.width / image.size.width,
+                              view.bounds.size.height / image.size.height)
+            
+            if minZoom > 1 { minZoom = 1 }
+            
+            scrollView.minimumZoomScale = minZoom
+            scrollView.zoomScale = minZoom
+        }
+    }
+    
+    func scrollViewDidZoom(scrollView: UIScrollView) {
+        updateConstraints()
+    }
+    
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        return imageView
     }
     
     @IBAction func onShare(sender: AnyObject) {
@@ -146,6 +208,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             showLabel.hidden = false
             Editor.selected = false
             Editor.enabled = false
+            updateZoom()
+            updateConstraints()
         }
     }
     
@@ -437,13 +501,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         showLabel.hidden = true
     }
     
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
-        return imageView
-    }
+   
     
     @IBAction func onTapGesture(sender: UITapGestureRecognizer) {
         UIView.animateWithDuration(0.4) { () -> Void in
-            self.scrollView.zoomScale = 1.5 * self.scrollView.zoomScale
+            if self.minZoom == self.scrollView.zoomScale {
+            self.scrollView.zoomScale = 2 * self.scrollView.zoomScale
+            } else {
+                self.scrollView.zoomScale = self.minZoom
+            }
         }
     }
     
