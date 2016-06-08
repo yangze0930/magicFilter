@@ -10,7 +10,7 @@ import UIKit
 
 
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIScrollViewDelegate {
     
     var oriImage:UIImage?
     var filteredImage:UIImage?
@@ -40,7 +40,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
     @IBOutlet weak var tapButton: UIButton!
     @IBOutlet var slider: UISlider!
     @IBOutlet weak var Editor: UIButton!
-    
+    @IBOutlet var zoomTapGestureRecognizer: UITapGestureRecognizer!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +75,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         slider.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
         slider.translatesAutoresizingMaskIntoConstraints = false
         Editor.enabled = false
+        
+        zoomTapGestureRecognizer.numberOfTapsRequired = 2
         
     }
 
@@ -434,5 +437,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate,UINaviga
         showLabel.hidden = true
     }
     
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
+    
+    @IBAction func onTapGesture(sender: UITapGestureRecognizer) {
+        UIView.animateWithDuration(0.4) { () -> Void in
+            self.scrollView.zoomScale = 1.5 * self.scrollView.zoomScale
+        }
+    }
+    
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//        if segue.identifier == "PresentSocial" {
+//            let destination = segue.destinationViewController
+//            destination.per
+//        }
+//    }
 }
 
